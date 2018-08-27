@@ -1,0 +1,13 @@
+puts(
+  if 1 <= 1
+  then
+    if 1 <= 1
+    then
+      0
+    else
+      1
+    end
+  else
+    2
+  end
+)

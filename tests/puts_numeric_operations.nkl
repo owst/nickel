@@ -1,0 +1,9 @@
+def g(x)
+    9 * x
+end
+
+def f(x, y)
+    (57005 << x) + g(y + 1)
+end
+
+puts f(16, 5430)

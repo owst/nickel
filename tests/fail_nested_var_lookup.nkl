@@ -1,0 +1,9 @@
+def f(x)
+  g(42)
+end
+
+def g(y)
+  puts x
+end
+
+f(10)

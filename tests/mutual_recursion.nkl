@@ -1,0 +1,29 @@
+def is_even(n)
+  if n == 0
+  then
+    1
+  else
+    is_odd(n - 1)
+  end
+end
+
+def is_odd(n)
+  if n == 0
+  then
+    0
+  else
+    is_even(n - 1)
+  end
+end
+
+if is_even(10240)
+then
+  if is_odd(10240)
+  then
+    puts 1
+  else
+    puts 2
+  end
+else
+    puts 3
+end

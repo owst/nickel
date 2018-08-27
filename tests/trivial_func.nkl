@@ -1,0 +1,5 @@
+def f(x, y)
+  x + y
+end
+
+puts f(42, 10)

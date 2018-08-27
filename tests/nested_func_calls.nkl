@@ -1,0 +1,13 @@
+def f(x, y, z)
+  g(x + y, z)
+end
+
+def g(x, y)
+  h(x << y)
+end
+
+def h(x)
+  x * 2
+end
+
+puts f(1, 2, 3)
