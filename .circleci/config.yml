@@ -1,0 +1,10 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: ubuntu:19.04
+    steps:
+      - checkout
+      - run: apt-get update
+      - run: apt-get install --yes bison clang clang-tidy colordiff flawfinder flex lldb llvm make shellcheck
+      - run: make

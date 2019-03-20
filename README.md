@@ -3,6 +3,8 @@
 Nickel is a toy language with a simple interpreter and [LLVM][llvm]-based
 [JIT][jit] evaluation mode.
 
+Latest build status: [![CircleCI](https://circleci.com/gh/owst/nickel.svg?style=svg)](https://circleci.com/gh/owst/nickel)
+
 ## What's in a name?
 
 Just In Time; In The Nick of Time; Nickel? Sorry! :grimacing:

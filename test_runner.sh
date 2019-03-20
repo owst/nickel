@@ -35,7 +35,7 @@ do
         fi
     done
 
-    printf "\n"
+    echo
 
     for f in "$OUTPUT_DIR"/*.output.diff
     do
