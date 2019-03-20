@@ -146,4 +146,3 @@ to the `printf` call.
 [jit]: https://en.wikipedia.org/wiki/Just-in-time_compilation
 [llvm-dis]: https://llvm.org/docs/CommandGuide/llvm-dis.html
 [lldb]: https://lldb.llvm.org/
-[clang-tidy]: https://clang.llvm.org/extra/clang-tidy/
