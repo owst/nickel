@@ -1,8 +1,5 @@
-lex.yy.c
-parser.output
-parser.tab.c
-parser.tab.h
-*.o
+y.tab.h
 *.bc
 tags
 nickel
+obj/

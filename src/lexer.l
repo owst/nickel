@@ -1,5 +1,5 @@
 %{
-#include "parser.tab.h"
+#include "y.tab.h"
 %}
 
 %option nounput

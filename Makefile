@@ -1,43 +1,46 @@
+SRC_DIR=src
+OBJ_DIR=obj
+INC_DIR=include
+
+SRCS=$(wildcard $(SRC_DIR)/*.c)
+OBJS=$(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+DEPS=$(OBJS:.o=.d)
+
+GENERATED_FILES=$(SRC_DIR)/lexer.c $(SRC_DIR)/parser.c include/y.tab.h
+LINT_FILES=$(filter-out ${GENERATED_FILES},$(wildcard $(SRC_DIR)/*.c $(INC_DIR)/*.h))
+
+LEX=flex
+YACC=bison -y
+YFLAGS=--defines=include/y.tab.h
 CC=clang
-CFLAGS=-g `llvm-config --cflags` -Wall -Wextra -Wpedantic -Wno-gnu-zero-variadic-macro-arguments
+CFLAGS=-g `llvm-config --cflags` -MD -MP -Wall -Wextra -Wpedantic -Wno-gnu-zero-variadic-macro-arguments -I$(INC_DIR)
 LD=clang++
 LDFLAGS=`llvm-config --cxxflags --ldflags --libs analysis bitwriter core executionengine interpreter mcjit native passes --system-libs`
 
+.PHONY: all
 all: nickel lint test
 
+.PHONY: clean
+clean:
+	rm -rf nickel ${GENERATED_FILES} $(OBJ_DIR)
+
+.PHONY: test
 test: nickel
 	./test_runner.sh
 
-GENERATED_FILES=lex.yy.c parser.tab.c
-LINT_FILES=$(filter-out ${GENERATED_FILES},$(wildcard *.c *.h))
-
+.PHONY: lint
 lint: nickel
 	clang-tidy ${LINT_FILES} -- $(CFLAGS)
 	flawfinder ${LINT_FILES}
 
-nickel: nickel.o jit.o interpreter.o parser.tab.o parser_helpers.o lex.yy.o helpers.o
+# Ensure we build parser first, to generate y.tab.h, used by later files
+nickel: $(OBJ_DIR)/parser.o $(OBJ_DIR)/lexer.o $(OBJS)
 	$(LD) $^ $(LDFLAGS) -o $@
 
-parser.tab.c parser.tab.h: parser.y parser_helpers.h
-	bison -d parser.y
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-lex.yy.c: lexer.l parser.tab.h
-	flex lexer.l
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR)
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $<
-
-nickel.o: nickel.c parser.tab.h interpreter.h jit.h
-	$(CC) $(CFLAGS) -c $<
-
-parser_helpers.o: parser_helpers.c interpreter.h parser_helpers.h
-	$(CC) $(CFLAGS) -c $<
-
-interpreter.o: interpreter.c interpreter.h helpers.h syntax.h
-	$(CC) $(CFLAGS) -c $<
-
-jit.o: jit.c jit.h interpreter.h helpers.h syntax.h
-	$(CC) $(CFLAGS) -c $<
-
-clean:
-	rm -f nickel ${GENERATED_FILES} parser.tab.h parser.output *.o
+-include $(DEPS)
