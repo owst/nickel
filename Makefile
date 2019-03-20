@@ -8,6 +8,7 @@ DEPS=$(OBJS:.o=.d)
 
 GENERATED_FILES=$(SRC_DIR)/lexer.c $(SRC_DIR)/parser.c include/y.tab.h
 LINT_FILES=$(filter-out ${GENERATED_FILES},$(wildcard $(SRC_DIR)/*.c $(INC_DIR)/*.h))
+TEST_RUNNER=test_runner.sh
 
 LEX=flex
 YACC=bison -y
@@ -26,12 +27,13 @@ clean:
 
 .PHONY: test
 test: nickel
-	./test_runner.sh
+	./$(TEST_RUNNER)
 
 .PHONY: lint
 lint: nickel
-	clang-tidy ${LINT_FILES} -- $(CFLAGS)
+	clang-tidy -warnings-as-errors='*' ${LINT_FILES} -- $(CFLAGS)
 	flawfinder ${LINT_FILES}
+	shellcheck $(TEST_RUNNER)
 
 # Ensure we build parser first, to generate y.tab.h, used by later files
 nickel: $(OBJ_DIR)/parser.o $(OBJ_DIR)/lexer.o $(OBJS)
